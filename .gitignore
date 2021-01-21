@@ -1,0 +1,15 @@
+
+# Compiled header files
+*.gch
+
+# Object files
+*.o
+
+# Static library files
+*.a
+
+# Prerequisites
+*.d
+
+# Executables
+*.timer
