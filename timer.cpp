@@ -1,6 +1,8 @@
 
 #include "timer.hpp"
 
+#include <iostream>
+
 using namespace cognocoder::chrono;
 
 timer::timer(cognocoder::chrono::time::nanoseconds interval,
@@ -24,6 +26,7 @@ void timer::wait(cognocoder::chrono::time::nanoseconds time) {
 
   time::set_timespec(_timespec, time);
   _ellapsed += time;
+  nanosleep(&_timespec, nullptr);
 }
 
 void timer::tick(cognocoder::chrono::time::nanoseconds ellapsed) {
