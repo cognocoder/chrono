@@ -13,3 +13,6 @@
 
 # Executables
 *.timer
+
+# Generated documentation
+README.html

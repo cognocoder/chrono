@@ -12,11 +12,13 @@ library = libcognocoder.chrono
 # Default: All objects needed to build timer application 
 objects = time.o timer.o
 
+# Documentation files.
+documentation = README
 
 .PHONY: all clean run install uninstall uninstall-cognocoder
 
 # Remove transient files.
-REMOVE := rm -rf *.gch *.o *.d $(binary) $(library).a
+REMOVE := rm -rf *.gch *.o *.d $(binary) $(library).a $(documentation).html
 
 all: clean $(binary) run
 	$(REMOVE)
@@ -70,4 +72,12 @@ uninstall:
 uninstall-cognocoder:
 	rm -rf $(DIR)$(HEADERS_DIR)$(NAMESPACE)
 	rm -rf $(DIR)$(OBJECTS_DIR)$(NAMESPACE)
+
+
+# Documentation metadata arguments.
+DOCMETA = --metadata title="cognocoder/chrono documentation"
+
+# Documentation build as an HTML file.
+$(documentation).html: $(documentation).md
+	pandoc $^ -f markdown -t html -s -o $@ $(DOCMETA)
 
