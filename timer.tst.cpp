@@ -1,4 +1,5 @@
 
+#include "duration.hpp"
 #include "time.hpp"
 #include "timer.hpp"
 
@@ -30,8 +31,7 @@ int main() {
   std::cout << "  " << default_timer;
   for (auto sleep : sleeps) {
     time::set_timespec(ts, sleep);
-    nanosleep(&ts, nullptr);
-    default_timer.tick(sleep);
+    default_timer.tick(measure<>::duration(nanosleep, &ts, nullptr));
     std::cout << default_timer;
   }
   std::cout << std::endl;
