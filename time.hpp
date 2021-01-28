@@ -1,6 +1,6 @@
 
-#ifndef _PX_TIME_HPP_
-#define _PX_TIME_HPP_
+#ifndef _COGNOCODER_CHRONO_TIME_HPP_
+#define _COGNOCODER_CHRONO_TIME_HPP_
 
 #include <chrono>
 #include <ctime>
