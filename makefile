@@ -9,17 +9,17 @@ test ?= .tst
 # Default: All objects needed to build timer application 
 objects = time.o timer.o
 
+
+.PHONY: all build clean run
+
+REMOVE := rm -rf *.gch $(objects) $(binary)
+
 # Flags to enable errors, fatal errors, strict to standard code.
 FLAGS  = -Wall -Wextra -Werror -Wfatal-errors -pedantic -pedantic-errors
 # Standard C++20, with debug symbols.
-FLAGS += -std=c++20 -ggdb 
+FLAGS += -std=c++20 -ggdb
 
-
-.PHONY: all clean run install uninstall uninstall-cognocoder
-
-# Remove transient files.
-REMOVE := rm -rf *.gch $(objects) $(binary) $(documentation).html
-
+build: clean $(objects)
 
 all: clean $(binary) run
 	$(REMOVE)
