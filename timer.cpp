@@ -21,12 +21,13 @@ timer::timer(cognocoder::chrono::time::nanoseconds interval,
   throw std::runtime_error { what.str() };
 }
 
-void timer::wait(cognocoder::chrono::time::nanoseconds time) {
+cognocoder::chrono::time::nanoseconds timer::wait(cognocoder::chrono::time::nanoseconds time) {
   time::validate_non_negative_time(time);
 
   time::set_timespec(_timespec, time);
-  _ellapsed += time;
   nanosleep(&_timespec, nullptr);
+
+  return time;
 }
 
 void timer::tick(cognocoder::chrono::time::nanoseconds ellapsed) {
@@ -48,9 +49,7 @@ void timer::tick(cognocoder::chrono::time::nanoseconds ellapsed) {
   }
 
   wait(_remaining);
-
-  // Don't tick and change further the timer state if it is paused.
-  if (paused()) return;
+  _ellapsed += _remaining;
 
   // This is the always unlocked setup.
   if (_intervals_to_unlock == 0) {
@@ -63,6 +62,9 @@ void timer::tick(cognocoder::chrono::time::nanoseconds ellapsed) {
     _locked = true;
     _intervals = _violations;
   }
+
+  // Don't tick and change further the timer state if it is paused.
+  if (paused()) return;
 
   /*
   ** Intervals to unlock reached: unlock timer.
