@@ -21,11 +21,13 @@ namespace cognocoder {
     public:
       timer(time::nanoseconds interval, int intervals_to_unlock);
 
-      void wait(time::nanoseconds time);
+      time::nanoseconds wait(time::nanoseconds time);
       void tick(time::nanoseconds ellapsed);
 
       bool locked() const { return _locked; }
       bool paused() const { return _paused; }
+
+      void pause(bool value) { _paused = value; };
 
       int violations() const { return _violations; }
 
