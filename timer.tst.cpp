@@ -13,20 +13,19 @@ using namespace cognocoder::chrono;
 using namespace std::literals::chrono_literals;
 
 int main() {
-  std::vector<time::nanoseconds> sleeps {
-              10ms,   10ms,   10ms,   10ms,
-      10ms,   10ms,  500ms,           10ms,
-    1000ms,
-              10ms,  500ms,           10ms,
-    2000ms,
-              10ms,   10ms,   10ms,  500ms,
-              10ms,  500ms,           10ms,
-             500ms,           10ms,   10ms,
-      10ms,   10ms,   10ms,   10ms,   10ms,
+  std::vector<time::nanoseconds> sleeps { 
+    480ms, 480ms, 480ms, 480ms,
+    480ms,        980ms, 480ms,
+           980ms, 480ms, 480ms,
+    480ms, 480ms,        980ms,
+    480ms,              1480ms,
+    1480ms,              480ms,
+    1980ms,
+    2480ms,
   };
 
   struct timespec ts;
-  timer default_timer { 250ms, 4 };
+  timer default_timer { 500ms, 4 };
   
   std::cout << "  " << default_timer;
   for (auto sleep : sleeps) {
