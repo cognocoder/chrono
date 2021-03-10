@@ -30,6 +30,14 @@ cognocoder::chrono::time::nanoseconds timer::wait(cognocoder::chrono::time::nano
   return time;
 }
 
+void timer::pause(bool value) {
+  _paused = value;
+  if (!_paused && _intervals >= _intervals_locked) {
+    _intervals = 0;
+    _locked = false;
+  }
+}
+
 void timer::tick(cognocoder::chrono::time::nanoseconds ellapsed) {
   time::validate_non_negative_time(ellapsed);
 
@@ -60,16 +68,13 @@ void timer::tick(cognocoder::chrono::time::nanoseconds ellapsed) {
     return;
   }
 
-  // Don't tick and change further the timer state if it is paused.
-  if (paused()) return;
-
   /*
   ** Intervals to unlock reached: unlock timer.
   **
   ** Note: _intervals may be much greater than _intervals_locked, due to at 
   ** least one interval set violation.
   */
-  if (_intervals >= _intervals_locked) {
+  if (!paused() && _intervals >= _intervals_locked) {
     _intervals = 0;
     _locked = false;
     return;
