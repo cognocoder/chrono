@@ -6,16 +6,16 @@
 using namespace cognocoder::chrono;
 
 timer::timer(cognocoder::chrono::time::nanoseconds interval,
-    int intervals_to_unlock)
+    int intervals_locked)
   : _interval { interval }, 
-    _intervals_to_unlock { intervals_to_unlock },
+    _intervals_locked { intervals_locked },
     _remaining { interval } {
   time::set_timespec(_timespec, interval);
 
-  if (intervals_to_unlock >= 0) return;
+  if (intervals_locked >= 0) return;
 
   std::stringstream what;
-  what << "Error: intervals_to_unlock { " << intervals_to_unlock << " } "
+  what << "Error: intervals_locked { " << intervals_locked << " } "
     << " must be >= 0." << std::endl;
 
   throw std::runtime_error { what.str() };
@@ -33,6 +33,8 @@ cognocoder::chrono::time::nanoseconds timer::wait(cognocoder::chrono::time::nano
 void timer::tick(cognocoder::chrono::time::nanoseconds ellapsed) {
   time::validate_non_negative_time(ellapsed);
 
+  _locked = true;
+
   _remaining = _interval - ellapsed;
   _ellapsed += ellapsed;
 
@@ -44,23 +46,18 @@ void timer::tick(cognocoder::chrono::time::nanoseconds ellapsed) {
   // wait remaining time in the interval after violated ones.
   else {
     _violations = ellapsed / _interval;
-    _remaining = ellapsed % _interval;
+    _remaining = _interval - ellapsed % _interval;
     _intervals += _violations + 1;
   }
 
-  wait(_remaining);
-  _ellapsed += _remaining;
+  // If unpaused, only wait if inside cycle time window.
+  if (paused() || _intervals <= _intervals_locked)
+    _ellapsed += wait(_remaining);
 
   // This is the always unlocked setup.
-  if (_intervals_to_unlock == 0) {
+  if (_intervals_locked == 0) {
     _locked = false;
     return;
-  }
-
-  // Always lock after a unlocked tick.
-  if (!_locked) {
-    _locked = true;
-    _intervals = _violations;
   }
 
   // Don't tick and change further the timer state if it is paused.
@@ -69,10 +66,10 @@ void timer::tick(cognocoder::chrono::time::nanoseconds ellapsed) {
   /*
   ** Intervals to unlock reached: unlock timer.
   **
-  ** Note: _intervals may be much greater than _intervals_to_unlock, due to at 
+  ** Note: _intervals may be much greater than _intervals_locked, due to at 
   ** least one interval set violation.
   */
-  if (_intervals >= _intervals_to_unlock) {
+  if (_intervals >= _intervals_locked) {
     _intervals = 0;
     _locked = false;
     return;
@@ -83,7 +80,10 @@ void timer::tick(cognocoder::chrono::time::nanoseconds ellapsed) {
 
 std::ostream& operator<<(std::ostream& os, const timer& t) {
   for (int i { 0 }; i < t._violations; i++)
-    os << "#";
-  os << (t._locked ? "·" : "*");
+    os << " ";
+  if (t._locked)
+    os << t._intervals;
+  else
+    os << "*";
   return os << std::flush;
 }
