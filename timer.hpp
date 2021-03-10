@@ -19,7 +19,7 @@ namespace cognocoder {
 
     class timer {
     public:
-      timer(time::nanoseconds interval, int intervals_to_unlock);
+      timer(time::nanoseconds interval, int intervals_locked);
 
       time::nanoseconds wait(time::nanoseconds time);
       void tick(time::nanoseconds ellapsed);
@@ -36,7 +36,7 @@ namespace cognocoder {
 
     private:
       const time::nanoseconds _interval;
-      const int _intervals_to_unlock;
+      const int _intervals_locked;
 
       time::nanoseconds _ellapsed { 0s };
       time::nanoseconds _remaining { 0s };
