@@ -24,12 +24,14 @@ namespace cognocoder {
       time::nanoseconds wait(time::nanoseconds time);
       void tick(time::nanoseconds ellapsed);
 
+      time::nanoseconds ellapsed() const { return _ellapsed; }
+
+      int violations() const { return _violations; }
+
       bool locked() const { return _locked; }
       bool paused() const { return _paused; }
 
-      void pause(bool value) { _paused = value; };
-
-      int violations() const { return _violations; }
+      void pause(bool value);
 
       // Means to inspect timer state.
       friend std::ostream& (::operator<<)(std::ostream& os, const timer& t);
