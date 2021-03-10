@@ -33,6 +33,7 @@ namespace cognocoder {
 
       void pause(bool value);
 
+
       // Means to inspect timer state.
       friend std::ostream& (::operator<<)(std::ostream& os, const timer& t);
 
@@ -50,6 +51,8 @@ namespace cognocoder {
       bool _paused { false };
 
       struct timespec _timespec;
+
+      void _reset();
     };
 
   }
