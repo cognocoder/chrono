@@ -1,8 +1,6 @@
 
 #include "timer.hpp"
 
-#include <iostream>
-
 using namespace cognocoder::chrono;
 
 timer::timer(cognocoder::chrono::time::nanoseconds interval,

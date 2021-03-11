@@ -3,7 +3,6 @@
 #define _COGNOCODER_CHRONO_DURATION_HPP_
 
 #include <chrono>
-#include <iostream>
 #include <functional>
 
 namespace cognocoder {
