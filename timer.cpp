@@ -60,11 +60,11 @@ void timer::tick(cognocoder::chrono::time::nanoseconds ellapsed) {
   }
 
   // If unpaused, only wait if inside cycle time window.
-  if (paused() || _intervals <= _intervals_locked)
+  if (paused() || _intervals <= _intervals_locked + 1 || !_intervals_locked)
     _ellapsed += wait(_remaining);
 
   // This is the always unlocked setup.
-  if (_intervals_locked == 0) {
+  if (!_intervals_locked) {
     _locked = false;
     return;
   }
@@ -75,7 +75,7 @@ void timer::tick(cognocoder::chrono::time::nanoseconds ellapsed) {
   ** Note: _intervals may be much greater than _intervals_locked, due to at 
   ** least one interval set violation.
   */
-  if (!paused() && _intervals >= _intervals_locked)
+  if (!paused() && _intervals > _intervals_locked)
     _reset();
 
   // The timer remains locked.
